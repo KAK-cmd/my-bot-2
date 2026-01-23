@@ -1,74 +1,51 @@
-# database.py - упрощенная версия для Render
-import logging
+# database.py - простая БД в памяти для Render
+import json
 import os
-
-logger = logging.getLogger(__name__)
 
 class Database:
     def __init__(self):
-        # Вместо SQLite используем память для простоты
+        self.file_path = '/tmp/bot_data.json'
         self.subscribers = set()
-        self.load_from_file()
+        self.load()
     
-    def load_from_file(self):
-        """Пытаемся загрузить из временного файла (если есть)"""
+    def load(self):
+        """Загружаем данные из файла"""
         try:
-            # На Render используем /tmp папку которая сохраняется между деплоями
-            temp_file = '/tmp/bot_subscribers.txt'
-            if os.path.exists(temp_file):
-                with open(temp_file, 'r') as f:
-                    for line in f:
-                        user_id = line.strip()
-                        if user_id.isdigit():
-                            self.subscribers.add(int(user_id))
-                logger.info(f"✅ Загружено {len(self.subscribers)} подписчиков из файла")
-        except Exception as e:
-            logger.error(f"❌ Ошибка загрузки БД: {e}")
+            if os.path.exists(self.file_path):
+                with open(self.file_path, 'r') as f:
+                    data = json.load(f)
+                    self.subscribers = set(data.get('subscribers', []))
+        except:
+            self.subscribers = set()
     
-    def save_to_file(self):
-        """Сохраняем в файл"""
+    def save(self):
+        """Сохраняем данные в файл"""
         try:
-            temp_file = '/tmp/bot_subscribers.txt'
-            with open(temp_file, 'w') as f:
-                for user_id in self.subscribers:
-                    f.write(f"{user_id}\n")
-        except Exception as e:
-            logger.error(f"❌ Ошибка сохранения БД: {e}")
+            data = {'subscribers': list(self.subscribers)}
+            with open(self.file_path, 'w') as f:
+                json.dump(data, f)
+        except:
+            pass
     
-    def add_subscriber(self, user_id: int, username: str = "", first_name: str = "", last_name: str = ""):
-        """Добавляет подписчика"""
-        try:
-            self.subscribers.add(user_id)
-            self.save_to_file()
-            logger.info(f"✅ Подписчик {user_id} добавлен")
+    def add_subscriber(self, user_id, **kwargs):
+        self.subscribers.add(user_id)
+        self.save()
+        return True
+    
+    def remove_subscriber(self, user_id):
+        if user_id in self.subscribers:
+            self.subscribers.remove(user_id)
+            self.save()
             return True
-        except Exception as e:
-            logger.error(f"❌ Ошибка добавления подписчика: {e}")
-            return False
-    
-    def remove_subscriber(self, user_id: int):
-        """Удаляет подписчика"""
-        try:
-            if user_id in self.subscribers:
-                self.subscribers.remove(user_id)
-                self.save_to_file()
-                logger.info(f"✅ Подписчик {user_id} удален")
-                return True
-        except Exception as e:
-            logger.error(f"❌ Ошибка удаления подписчика: {e}")
         return False
     
     def get_all_subscribers(self):
-        """Получает список всех подписчиков"""
         return list(self.subscribers)
     
-    def is_subscriber(self, user_id: int):
-        """Проверяет, является ли пользователь подписчиком"""
+    def is_subscriber(self, user_id):
         return user_id in self.subscribers
     
     def get_subscribers_count(self):
-        """Возвращает количество подписчиков"""
         return len(self.subscribers)
 
-# Создаем глобальный экземпляр БД
 db = Database()
