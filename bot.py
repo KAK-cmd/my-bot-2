@@ -9,16 +9,7 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from config import BOT_TOKEN
 from excel_parser import ПарсерРасписания
 import sqlite3
-#======================================================================================================================================================= тут начало
-# В любом месте кода можешь вставить:
-print(f"🕒 DEBUG: Время сейчас - {datetime.now().strftime('%H:%M:%S')}")
 
-# Или в хэндлере:
-@dp.message(Command("test"))
-async def test_cmd(message: types.Message):
-    current_time = datetime.now().strftime("%H:%M:%S")
-    await message.answer(f"🕒 Тестовое время: {current_time}")
-#======================================================================================================================================================= тут конец
 # Настройка логирования - ТОЛЬКО в консоль
 logging.basicConfig(
     level=logging.INFO,
@@ -589,6 +580,7 @@ if __name__ == '__main__':
     except Exception as e:
 
         print(f"\n💥 Ошибка: {e}")
+
 
 
 
