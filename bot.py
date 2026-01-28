@@ -251,7 +251,7 @@ async def планировщик_рассылки():
         now = datetime.now()
         
         # Проверяем, 7:00 утра
-        if now.hour == 4 and now.minute == 0:
+        if now.hour == 13 and now.minute == 50:
             print(f"⏰ {now.strftime('%H:%M')} - Рассылка!")
             
             # Отправляем расписание на сегодня
@@ -581,3 +581,4 @@ if __name__ == '__main__':
     except Exception as e:
 
         print(f"\n💥 Ошибка: {e}")
+
