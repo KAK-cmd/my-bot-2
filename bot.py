@@ -421,6 +421,7 @@ async def unsubscribe_cmd(message: types.Message):
 @dp.message(Command("test_vremi"))
 async def test_vremi_cmd(message: types.Message):
     сейчас = datetime.now()
+    сейчас_по_мск = сейчас + timedelta(hours=3)
     await message.answer(f"⏰ Время: {сейчас.strftime('%H:%M:%S')}\n📅 Дата: {сейчас.strftime('%d.%m.%Y')}")
 
 # ============ ОБРАБОТКА КНОПОК ============
