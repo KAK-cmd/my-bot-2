@@ -248,9 +248,10 @@ async def отправить_расписание_всем(день_недели
 async def планировщик_рассылки():
     """Запускает планировщик для автоматической рассылки в 7:00"""
     while True:
-        now = datetime.now() + timedelta(hours=3)
+        now = datetime.now()
+        now_moscow = now + timedelta(hours=3)
         # Проверяем, 7:00 утра
-        if now.hour == 7 and now.minute == 0:
+        if now_moscow.hour == 7 and now_moscow.minute == 0:
             print(f"⏰ {now.strftime('%H:%M')} - Рассылка!")
             
             # Отправляем расписание на сегодня
